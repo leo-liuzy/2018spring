@@ -1,0 +1,63 @@
+{
+  "dataset_reader":{
+    "type":"seq2seq",
+
+    "source_token_indexers": {
+      "tokens": {
+        "type": "single_id",
+        "namespace": "source_tokens"
+      }
+    },
+
+    "target_token_indexers": {
+      "tokens": {
+        "type": "single_id",
+        "namespace": "target_tokens"
+      }
+    }
+  },
+
+
+  "train_data_path": "/gscratch/stf/zeyuliu2/bioasq/corpus_train.tsv",
+  "validation_data_path": "/gscratch/stf/zeyuliu2/bioasq/corpus_dev.tsv",
+  "test_data_path": "/gscratch/stf/zeyuliu2/bioasq/corpus_test.tsv",
+
+  "model": {
+    "type": "simple_seq2seq",
+    "source_embedder": {
+      "tokens": {
+        "type": "embedding",
+        "embedding_dim":300,
+        "vocab_namespace": "source_tokens",
+        "trainable": true
+      },
+    },
+
+    "encoder": {
+      "type": "lstm",
+      "input_size": 300,
+      "hidden_size": 300,
+      "num_layers": 3
+    },
+    "scheduled_sampling_ratio": 1.0,
+    "max_decoding_steps": 350,
+    "target_namespace": "target_tokens",
+    "attention_function": {"type": "dot_product"}
+  },
+
+  "iterator": {
+    "type": "bucket",
+    "batch_size" : 32,
+    "sorting_keys": [["source_tokens", "num_tokens"], ["target_tokens", "num_tokens"]]
+  },
+
+  "trainer": {
+    "num_epochs": 5,
+    "patience": 4,
+    "cuda_device": 0,
+    "optimizer": {
+      "type": "adam",
+      "lr": 0.01
+    }
+  }
+}

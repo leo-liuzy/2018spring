@@ -1,0 +1,1 @@
+from WebQA.prediction.webQApredictor import WebQABaselinesPredictor
